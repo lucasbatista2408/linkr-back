@@ -1,0 +1,4 @@
+node_modules
+.env
+Linkr_postgres_create.sql
+.eslintrc.json
