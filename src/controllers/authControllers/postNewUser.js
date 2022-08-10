@@ -1,10 +1,10 @@
-import {userRepo} from "../../repositories/userRepo.js";
+import {userRepo} from "../../repositories/authRepo.js";
 import bcrypt from 'bcrypt';
 
 
 export default async function postNewUser(req,res){
   
-  const {username, email, password, profileImg, confirm_password} = req.body;
+  const {username, email, password, profileImg} = req.body;
 
   const encrypted_password = bcrypt.hashSync(password, 10)
 
