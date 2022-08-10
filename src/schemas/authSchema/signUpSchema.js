@@ -10,7 +10,7 @@ export default async function signUpSchema(req,res,next){
     username: joi.string().required(),
     email: joi.string().email().required(),
     password: joi.string().required(),
-    profileImg: joi.string().allow(''),
+    picture: joi.string().allow(''),
   })
 
   try {

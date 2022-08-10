@@ -1,4 +1,4 @@
-import { userRepo } from '../../repositories/userRepo.js';
+import { userRepo } from '../../repositories/authRepo.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -9,7 +9,7 @@ export default async function signInUser(req,res){
 
 	const values = [email];
 
-	const {rows: user, rowCount} = await userRepo.signInUserQuery(values);
+	const {rows: user, rowCount} = await userRepo.selectFromUsersQuery(values);
 
 	try {
     
