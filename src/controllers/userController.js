@@ -4,9 +4,8 @@ export async function searchUserControler(req, res){
 	const percent = '%';
 	const {username} = req.body;
 	const searchUsername = username.concat(percent);
-	console.log(searchUsername);
 	try{
-		const searchedUser = pageRepository.searchUserQuerie(searchUsername);
+		const searchedUser = await pageRepository.searchUserQuerie(searchUsername);
 		if(searchedUser.rowCount === 0){
 			res.status(200).send('');
 			return;
