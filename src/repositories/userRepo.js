@@ -3,16 +3,19 @@ import client from "../database/db.js";
 
 async function postNewUserQuery(values){
 
-  const query = `INSERT INTO "users" (username, email, password, "profileImg") `
+  const query = `INSERT INTO "users" (username, email, password, "profileImg") VALUES ($1, $2, $3, $4)`
 
-  await client.query(query, values)
+  return client.query(query, values)
 }
 
-async function signInUser(){
+async function signInUserQuery(values){
 
+  const query = `SELECT*FROM "users" WHERE email = $1`
+
+  return client.query(query, values)
 }
 
 export const userRepo = {
 	postNewUserQuery,
-  signInUser,
+  signInUserQuery,
 };
