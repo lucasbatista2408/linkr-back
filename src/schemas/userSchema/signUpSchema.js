@@ -4,19 +4,21 @@ import joi from "joi";
 export default async function signUpSchema(req,res,next){
 
   const user = req.body
+  console.log(user)
 
   const schema = joi.object({
-    name: joi.string().required(),
+    username: joi.string().required(),
     email: joi.string().email().required(),
-    profileImg: joi.string(),
     password: joi.string().required(),
     confirm_password: joi.string().valid(joi.ref('password')).required(),
+    profileImg: joi.string().allow(''),
   })
 
   try {
     const {error} = schema.validate(user,{abortEarly: false});
 
     if (error) {
+      console.error(error)
       return res.sendStatus(400);
     }
 

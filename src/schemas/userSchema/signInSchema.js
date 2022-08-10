@@ -14,6 +14,7 @@ export default async function signInSchema(req,res,next){
     const {error} = schema.validate(user,{abortEarly: false});
 
     if (error) {
+      console.log(error.details)
       return res.sendStatus(400);
     }
 
