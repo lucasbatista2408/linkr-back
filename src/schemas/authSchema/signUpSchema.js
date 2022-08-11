@@ -6,5 +6,3 @@ export const signUpschema = joi.object({
 	password: joi.string().required(),
 	profileImg: joi.string().allow(''),
 });
-
-	

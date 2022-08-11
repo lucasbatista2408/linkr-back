@@ -8,7 +8,7 @@ async function postNewUserQuery(values){
 	return client.query(query, values);
 }
 
-async function signInUserQuery(values){
+async function selectFromUsersQuery(values){
 
 	const query = 'SELECT*FROM "users" WHERE email = $1';
 
@@ -17,5 +17,5 @@ async function signInUserQuery(values){
 
 export const userRepo = {
 	postNewUserQuery,
-	signInUserQuery,
+	selectFromUsersQuery,
 };
