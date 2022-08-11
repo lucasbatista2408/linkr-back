@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import postNewUser from '../controllers/authControllers/postNewUser.js'
+import postNewUser from '../controllers/authControllers/postNewUser.js';
 import signInUser from '../controllers/authControllers/signInUser.js';
 import joiValidation from '../middlewares/joiValidation.js';
 import { signInschema } from '../schemas/authSchema/signInSchema.js';
