@@ -3,7 +3,7 @@ import client from '../database/db.js';
 
 async function postNewUserQuery(values){
 
-	const query = 'INSERT INTO "users" (username, email, password, "profileImg") VALUES ($1, $2, $3, $4)';
+	const query = 'INSERT INTO "users" (username, email, password, "profileImgUrl") VALUES ($1, $2, $3, $4)';
 
 	return client.query(query, values);
 }
