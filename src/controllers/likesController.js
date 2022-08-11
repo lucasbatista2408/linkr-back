@@ -1,26 +1,25 @@
 import client from "../database/db.js";
+import { likesRepo } from "../repositories/likesRepo.js";
+
 
 export async function getLikes(req,res){
     const {id} = req.params;
     if(isNaN(parseInt(id))) return res.sendStatus(400);
 
-    const userId =5;
+    const userId = req.userId;
 
     try {
-        
-        const {rowCount, rows: users} = await client.query(`SELECT u.id, u.username
-        FROM likes l
-        JOIN posts p ON l."postId" = p.id
-        JOIN users u ON l."userId" = u.id
-        WHERE p.id = $1;`, [id]);
+
+        const hasPost = await likesRepo.searchPostQuerie(id);
+        if(hasPost.rowCount == 0) return res.sendStatus(404);
+
+        const {rowCount, rows: users} = await likesRepo.getLikesNumbersAndUsersQuerie(id);
         
         const hasUserLiked = users.filter(e => e.id === userId);
         
-        console.log(rowCount, users, hasUserLiked);
         if(hasUserLiked.length != 0){
             const usersThatLiked = users.filter(e => e.id != userId);
             const usernamesThatLiked = usersThatLiked.map(e => e.username);
-            console.log(usersThatLiked, usernamesThatLiked);
             
             const likes = {quantity: rowCount, users: usernamesThatLiked };
             return res.status(200).send(likes);
@@ -28,7 +27,6 @@ export async function getLikes(req,res){
 
        
         const usernamesThatLiked = users.map(e => e.username);
-        console.log( usernamesThatLiked);
         
         const likes = {quantity: rowCount, users: usernamesThatLiked };
         res.status(200).send(likes);
@@ -44,10 +42,13 @@ export async function addLike(req,res){
     const {id} = req.params;
     if(isNaN(parseInt(id))) return res.sendStatus(400);
 
-    const userId =5;
-    //const userId = req.user??
+    const userId = req.userId;
     
     try {
+
+        const hasPost = await likesRepo.searchPostQuerie(id);
+        if(hasPost.rowCount == 0) return res.sendStatus(404);
+
         const params = [];
         const conditions = [];
         let whereClause = '';
@@ -66,13 +67,11 @@ export async function addLike(req,res){
             whereClause += `WHERE ${conditions.join(' AND ')}`;
         };
 
-        const {rowCount} = await client.query(`SELECT * FROM likes ${whereClause};`, params);
-
-        console.log(rowCount, id, userId, whereClause, params);
+        const {rowCount} = await likesRepo.searchLikesQuerie(whereClause, params);
 
         if(rowCount > 0 ) return res.sendStatus(409);
         
-        await client.query(`INSERT INTO likes ("postId", "userId") VALUES ( $1, $2);`, params);
+        await likesRepo.addLikeQuerie(params);
         res.sendStatus(200);
 
     } catch (error) {
@@ -85,10 +84,13 @@ export async function deleteLike(req,res){
     const {id} = req.params;
     if(isNaN(parseInt(id))) return res.sendStatus(400);
 
-    const userId =5;
-    //const userId = req.user??
+    const userId = req.userId;
 
     try {
+
+        const hasPost = await likesRepo.searchPostQuerie(id);
+        if(hasPost.rowCount == 0) return res.sendStatus(404);
+
 
         const params = [];
         const conditions = [];
@@ -108,13 +110,11 @@ export async function deleteLike(req,res){
             whereClause += `WHERE ${conditions.join(' AND ')}`;
         };
 
-        const {rowCount} = await client.query(`SELECT * FROM likes ${whereClause};`, params);
-
-        console.log(rowCount, id, userId, whereClause, params);
+        const {rowCount} = await likesRepo.searchLikesQuerie(whereClause, params);
 
         if(rowCount == 0 ) return res.sendStatus(404);
         
-        await client.query(`DELETE FROM likes ${whereClause};`, params);
+        await likesRepo.deleteLikeQuerie(whereClause, params);
         
         res.sendStatus(204);
     } catch (error) {
