@@ -2,8 +2,9 @@ import { pageRepository } from '../repositories/userRepository.js';
 
 export async function searchUserControler(req, res){
 	const percent = '%';
+	console.log(req.body);
 	const {username} = req.body;
-	const searchUsername = username.concat(percent);
+	const searchUsername = username?.concat(percent);
 	try{
 		const searchedUser = await pageRepository.searchUserQuerie(searchUsername);
 		if(searchedUser.rowCount === 0){
