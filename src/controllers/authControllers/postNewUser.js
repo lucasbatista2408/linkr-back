@@ -12,9 +12,9 @@ export default async function postNewUser(req,res){
 
 	const values = [username, email, encrypted_password, profileImg];
 
-	const {rowCount} = await userRepo.selectFromUsersQuery([email])
+	const {rowCount} = await userRepo.selectFromUsersQuery([email]);
 
-	if(rowCount > 0) return res.status(409).send('email already in use')
+	if(rowCount > 0) return res.status(409).send('email already in use');
 
 	try {
 		await userRepo.postNewUserQuery(values);
