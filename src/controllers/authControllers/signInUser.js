@@ -8,6 +8,7 @@ export default async function signInUser(req,res){
 	const {email, password} = req.body;
 
 	const values = [email];
+	console.log(email);
 
 	const {rows: user, rowCount} = await userRepo.selectFromUsersQuery(values);
 
