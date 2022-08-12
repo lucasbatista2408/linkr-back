@@ -2,7 +2,7 @@
   "name": "linkr-back",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,6 +22,7 @@
     "pg": "^8.7.3"
   },
   "devDependencies": {
-    "eslint": "^8.21.0"
+    "eslint": "^8.21.0",
+    "eslint-plugin-react": "^7.30.1"
   }
 }
