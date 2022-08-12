@@ -1,7 +1,7 @@
-CREATE TABLE "users" (
-  "id" BIGSERIAL PRIMARY KEY,
-  "username" TEXT NOT NULL,
-  "email" TEXT UNIQUE NOT NULL,
-  "password" TEXT NOT NULL,
-  "profileImg" TEXT
-)
+CREATE TABLE users (
+	"id" serial NOT NULL PRIMARY KEY,
+	"username" TEXT NOT NULL,
+	"email" TEXT NOT NULL UNIQUE,
+	"password" TEXT NOT NULL,
+	"profileImgUrl" TEXT
+);
