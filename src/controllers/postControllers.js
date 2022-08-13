@@ -1,6 +1,8 @@
 import {
+	createHashtagId,
 	createPostQuery,
-	getPostQuery
+	getPostQuery,
+	searchHashtag
 } from '../repositories/postRepository.js';
 import urlMetadata from 'url-metadata';
 
@@ -8,8 +10,21 @@ export async function createPost(req, res) {
 	const user = req.userId;
 	const { url, description } = req.body;
 	const values = [user, url, description];
+	console.log(description);
+	const arr = description.split(' ');
+	console.log(arr);
+	const hashtags = arr.filter(e => e.startsWith('#'))
+	console.log(hashtags);
+
 	try {
 		await createPostQuery(values);
+		
+		//for(i = 0; i < hashtags.length; i++){
+		//	const hasHashtag = await searchHashtag(hashtags[i]);
+		//	if(!hasHashtag) await createHashtagId(hashtags[i]);
+		//	 
+		//}
+
 		res.sendStatus(201);
 	} catch (error) {
 		console.log(error);

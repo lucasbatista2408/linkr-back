@@ -19,3 +19,15 @@ export async function getPostQuery() {
 	return posts;
 
 }
+
+export async function searchHashtag(hashtag){
+	const {rows} = await client.query(`SELECT * FROM hashtag WHERE hashtag LIKE $1;`, [hashtag])
+
+	return rows;
+}
+
+export async function createHashtagId(hashtag){
+	await client.query(`INSERT INTO hashtags (hashtag) VALUES ($1);`,[hashtag]);
+}
+
+export async function deleteHashtag(){}
