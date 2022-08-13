@@ -31,7 +31,7 @@ export async function getPost(req, res) {
 export async function getDatasUrl(req, res) {
 	const url = req.query.url;
 	const datasUrl = {};
-	urlMetadata(url).then(
+	urlMetadata(url,{descriptionLength:100}).then(
 		function (metadata) {
 			datasUrl.title = metadata.title;
 			datasUrl.description = metadata.description;
