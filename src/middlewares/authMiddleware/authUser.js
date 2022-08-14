@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export default async function (req,res,next){
+export default async function authUser (req,res,next){
 
   const { authorization } = req.headers;
   const token = authorization?.replace('Bearer ', '');
