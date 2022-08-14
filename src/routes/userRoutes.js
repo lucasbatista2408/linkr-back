@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { searchUserControler } from '../controllers/userController.js';
-import joiValidation from '../middlewares/joiValidation.js';
-import { searchUserSchema } from '../schemas/userSchema.js';
+import { searchUserControler, searchUserById } from '../controllers/userController.js';
+import { authUser } from '../middlewares/authMiddleware/authUser.js';
 
 const userRouter = Router();
-userRouter.get('/user', joiValidation(searchUserSchema), searchUserControler);
+userRouter.get('/user',authUser, searchUserControler);
+userRouter.get('/user/:id',authUser, searchUserById);
 
 export default userRouter;
