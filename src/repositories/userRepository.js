@@ -19,7 +19,15 @@ async function getPostById(id) {
 		 ORDER BY posts.id DESC limit 20`,[id]);
 
 }
+
+
+async function getUserById(id){
+	return client.query(`SELECT username 
+                         FROM users 
+                         WHERE id = $1;`, [id]);
+}
 export const pageRepository ={
 	searchUserQuerie,
-	getPostById
+	getPostById,
+	getUserById
 };
