@@ -1,6 +1,7 @@
 import {
 	createPostQuery,
-	getPostQuery
+	getPostQuery,
+	updatePostQuery
 } from '../repositories/postRepository.js';
 import urlMetadata from 'url-metadata';
 
@@ -44,4 +45,19 @@ export async function getDatasUrl(req, res) {
 			res.sendStatus(500);
 		});
 	
+}
+
+export async function updatePost (req, res){
+	const userId = req.userId;
+	const {description,url, id}= req.body;
+	try{
+		const post = await updatePostQuery(description,url,id,userId);
+		if(post.RowCount ===0){
+			res.sendStatus(404);
+			return;
+		}
+		res.status(200).send(post.rows[0]);
+	}catch(error){
+		res.status(500).send(error);
+	}
 }
