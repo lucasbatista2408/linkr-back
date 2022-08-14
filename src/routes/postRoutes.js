@@ -5,7 +5,7 @@ import {
 	createPost,
 	getPost,
 	getDatasUrl,
-	deletePostId
+	deletePostId,
 	updatePost 
 } from '../controllers/postControllers.js';
 import { authUser } from '../middlewares/authMiddleware/authUser.js';

@@ -2,13 +2,11 @@ import {
 	createHashtagId,
 	createPostQuery,
 	getPostQuery,
-<<<<<<< HEAD
-	searchHashtag
-=======
 	deletePost,
-	getPostId
-	updatePostQuery
->>>>>>> 0f8c392d1c528d03e8656bb28c32908108119f7d
+	getPostId,
+	updatePostQuery,
+	searchHashtag,
+	createPost_Hashtag
 } from '../repositories/postRepository.js';
 import urlMetadata from 'url-metadata';
 
@@ -20,16 +18,30 @@ export async function createPost(req, res) {
 	const arr = description.split(' ');
 	console.log(arr);
 	const hashtags = arr.filter(e => e.startsWith('#'))
-	console.log(hashtags);
+	console.log(hashtags, hashtags.length);
 
 	try {
-		await createPostQuery(values);
+		const post = await createPostQuery(values);
+		const postId = post.id;
+		console.log(postId)
+
+		for(let i = 0; i < hashtags.length; i++){
+			const hasHashtag = await searchHashtag(hashtags[i]);
+			console.log(hasHashtag);
+			let hashtagId = 0;
+			if(hasHashtag.length === 0) {
+				const hashtag = await createHashtagId(hashtags[i]);
+				hashtagId = hashtag[0].id;
+				console.log(hashtag, hashtagId)
+			} else{
+				hashtagId = hasHashtag[0].id;
+				console.log(hasHashtag, hashtagId)
+			};
+			const valuesHashtag = [postId, hashtagId];
+			console.log(valuesHashtag);
+			await createPost_Hashtag(valuesHashtag);
+		}
 		
-		//for(i = 0; i < hashtags.length; i++){
-		//	const hasHashtag = await searchHashtag(hashtags[i]);
-		//	if(!hasHashtag) await createHashtagId(hashtags[i]);
-		//	 
-		//}
 
 		res.sendStatus(201);
 	} catch (error) {
