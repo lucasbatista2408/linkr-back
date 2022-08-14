@@ -1,4 +1,3 @@
-import client from '../database/db.js';
 import { likesRepo } from '../repositories/likesRepo.js';
 
 
@@ -15,23 +14,23 @@ export async function getLikes(req,res){
 
 		const {rowCount, rows: users} = await likesRepo.getLikesNumbersAndUsersQuerie(id);
         
-		const hasUserLiked = users.filter(e => e.id === userId);
+		const hasUserLiked = users.filter(e => e.id === parseInt(userId));
         
 		if(hasUserLiked.length != 0){
-			const usersThatLiked = users.filter(e => e.id != userId);
+
+            const usersThatLiked = users.filter(e => e.id !== parseInt(userId));
 			const usernamesThatLiked = usersThatLiked.map(e => e.username);
             
-			const likes = {quantity: rowCount, users: usernamesThatLiked };
+			const likes = {quantity: rowCount, users: usernamesThatLiked, hasUserLiked: true };
 			return res.status(200).send(likes);
 		}
 
-       
 		const usernamesThatLiked = users.map(e => e.username);
         
-		const likes = {quantity: rowCount, users: usernamesThatLiked };
+		const likes = {quantity: rowCount, users: usernamesThatLiked, hasUserLiked:false };
 		res.status(200).send(likes);
 
-	} catch (error) {SELECT;
+	} catch (error) {
 		console.log(error);
 		res.sendStatus(500);
 	}
