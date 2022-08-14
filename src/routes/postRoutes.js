@@ -6,7 +6,7 @@ import {
 	getPost,
 	getDatasUrl,
 	deletePostId
-
+	updatePost 
 } from '../controllers/postControllers.js';
 import { authUser } from '../middlewares/authMiddleware/authUser.js';
 
@@ -15,6 +15,6 @@ postRouter.post('/post', joiValidation(postSchema),authUser, createPost );
 postRouter.get('/post', authUser, getPost);
 postRouter.get('/url-metadata', getDatasUrl);
 postRouter.delete('/delete/:id', deletePostId);
-
+postRouter.put('/post', joiValidation(postSchema) ,authUser,updatePost);
 
 export default postRouter;

@@ -38,9 +38,17 @@ export async function deletePost(value) {
 		`, value
 	);
 }
+
 export async function getPostId(value){
 	const {rows:post}=await client.query(
 		'SELECT * posts WHERE id = $1',value
 	);
 	return post;
+}
+
+export async function updatePostQuery(description, url,id, userId){
+	return client.query(`UPDATE posts
+						 SET description =$1, url = $2
+	                     WHERE id = $3 AND "userId"= $4
+						 RETURNING url, description`,[description,url,id, userId]);
 }
