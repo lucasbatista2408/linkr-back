@@ -76,4 +76,3 @@ export async function createPost_Hashtag(values){
 	await client.query(`INSERT INTO post_hashtag ("postId", "hashtagId") VALUES ($1, $2);`, values);
 }
 
-export async function deleteHashtag(){}
