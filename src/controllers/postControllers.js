@@ -2,7 +2,7 @@ import {
 	createPostQuery,
 	getPostQuery,
 	deletePost,
-	getPostId
+	getPostId,
 	updatePostQuery
 } from '../repositories/postRepository.js';
 import urlMetadata from 'url-metadata';
