@@ -1,6 +1,8 @@
 import {
 	createPostQuery,
-	getPostQuery
+	getPostQuery,
+	deletePost,
+	getPostId
 } from '../repositories/postRepository.js';
 import urlMetadata from 'url-metadata';
 
@@ -31,7 +33,7 @@ export async function getPost(req, res) {
 export async function getDatasUrl(req, res) {
 	const url = req.query.url;
 	const datasUrl = {};
-	urlMetadata(url,{descriptionLength:100}).then(
+	urlMetadata(url, { descriptionLength: 100 }).then(
 		function (metadata) {
 			datasUrl.title = metadata.title;
 			datasUrl.description = metadata.description;
@@ -43,5 +45,24 @@ export async function getDatasUrl(req, res) {
 			console.log(error);
 			res.sendStatus(500);
 		});
-	
+
+}
+export async function deletePostId(req, res) {
+	const postId = req.params.id;
+	const user = req.userId;
+	const post = getPostId([postId]);
+	try {
+		if (post.userId == user) {
+			await deletePost([postId]);
+			res.sendStatus(204);
+		}else{
+			res.sendStatus(401);
+		}
+	} catch (error) {
+		console.log(error);
+		res.sendStatus(500);
+	}
+
+
+
 }

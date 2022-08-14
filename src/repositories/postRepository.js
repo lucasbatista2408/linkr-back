@@ -1,3 +1,4 @@
+
 import client from '../database/db.js';
 
 export async function createPostQuery(values) {
@@ -18,4 +19,28 @@ export async function getPostQuery() {
 
 	return posts;
 
+}
+
+export async function deletePost(value) {
+	await client.query(
+		`DELETE FROM likes 
+		WHERE "postId" = $1
+		`, value
+	);
+	await client.query(
+		`DELETE FROM post_hashtag
+		WHERE "postId" = $1
+		`, value
+	);
+	await client.query(
+		`DELETE FROM posts
+		WHERE id = $1
+		`, value
+	);
+}
+export async function getPostId(value){
+	const {rows:post}=await client.query(
+		'SELECT * posts WHERE id = $1',value
+	);
+	return post;
 }
