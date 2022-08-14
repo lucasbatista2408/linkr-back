@@ -19,3 +19,10 @@ export async function getPostQuery() {
 	return posts;
 
 }
+
+export async function updatePostQuery(description, url,id, userId){
+	return client.query(`UPDATE posts
+						 SET description =$1, url = $2
+	                     WHERE id = $3 AND "userId"= $4
+						 RETURNING url, description`,[description,url,id, userId]);
+}
