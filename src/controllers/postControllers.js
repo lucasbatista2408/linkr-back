@@ -23,7 +23,6 @@ export async function createPost(req, res) {
 	for (const v of pureHashtags ){
 		lowerNames.push(v.toLowerCase());
 	}
-	console.log(lowerNames);
 	
 	const hashtags = [];
 
