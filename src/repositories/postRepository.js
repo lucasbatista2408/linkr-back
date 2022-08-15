@@ -40,15 +40,13 @@ export async function deletePost(value) {
 		`, value
 	);
 	await client.query(
-		`DELETE FROM posts
-		WHERE id = $1
-		`, value
+		`DELETE FROM posts WHERE id = $1`, value
 		);
 	}
 	
 	export async function getPostId(value){
-		const {rows:post}=await client.query(
-		'SELECT * posts WHERE id = $1',value
+		const {rows:post}= await client.query(
+		'SELECT * FROM posts WHERE id = $1',value
 		);
 		return post;
 }
