@@ -47,7 +47,7 @@ export async function getPostId(value){
 	const {rows:post}= await client.query(
 		'SELECT * FROM posts WHERE id = $1',value
 	);
-	return post;
+	return post[0];
 }
 export async function updatePostQuery(description, url,id, userId){
 	return client.query(`UPDATE posts

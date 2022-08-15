@@ -14,7 +14,7 @@ const postRouter = Router();
 postRouter.post('/post', joiValidation(postSchema),authUser, createPost );
 postRouter.get('/post', authUser, getPost);
 postRouter.get('/url-metadata', getDatasUrl);
-postRouter.delete('/delete/:id', deletePostId);
+postRouter.delete('/delete/:id',authUser, deletePostId);
 postRouter.put('/post', joiValidation(postSchema) ,authUser,updatePost);
 
 export default postRouter;

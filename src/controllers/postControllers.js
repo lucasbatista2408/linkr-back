@@ -111,12 +111,10 @@ export async function getDatasUrl(req, res) {
 
 export async function deletePostId(req, res) {
 	const postId = req.params.id;
-	console.log(postId);
 	const user = req.userId;
-	console.log(user);
-	const post = getPostId([postId]);
 	try {
-		if (post.userId === user) {
+		const post = await getPostId([postId]);
+		if (post.userId == user) {
 			await deletePost([postId]);
 			return res.sendStatus(204);
 		}else{
@@ -124,7 +122,7 @@ export async function deletePostId(req, res) {
 		}
 	} catch (error) {
 		console.log(error);
-		return res.sendStatus(500);
+		return res.sendStatus(500); 
 	}
 }
 
