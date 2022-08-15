@@ -140,7 +140,9 @@ export async function updatePost (req, res){
 			return;
 		}
 		await insertHashtags(hashtags,parseInt(id));
+		console.log('aqui');
 		await hashtagRepo.deleteHashtags();
+		console.log('aqui2');
 		res.status(200).send(post.rows[0]);
 	}catch(error){
 		res.status(500).send(error);
