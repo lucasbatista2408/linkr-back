@@ -8,32 +8,49 @@ import {
 	searchHashtag,
 	createPost_Hashtag
 } from '../repositories/postRepository.js';
+import { hashtagRepo } from '../repositories/hashtagRepo.js';
 import urlMetadata from 'url-metadata';
 
-export async function createPost(req, res) {
-	const user = req.userId;
-	const { url, description } = req.body;
-	const values = [user, url, description];
+function hashtagSeparator(description){
 	const lowerNames =[];
-	console.log(description);
 	const arr = description.split(' ');
-	console.log(arr);
 	const pureHashtags = arr.filter(e => e.startsWith('#'));
-	console.log(pureHashtags);
 	for (const v of pureHashtags ){
 		lowerNames.push(v.toLowerCase());
 	}
-	console.log(lowerNames);
-	
 	const hashtags = [];
-
 	lowerNames.forEach(function(item) {
 		if(hashtags.indexOf(item) < 0) {
 			hashtags.push(item);
 		}
 	});
+	return hashtags;
+}
 
-	console.log(hashtags, hashtags.length);
+async function insertHashtags(hashtags,postId){
+	let hashtagId = 0;
+	let hasHashtag = null;
+	for(let i = 0; i < hashtags.length; i++){
+		hasHashtag = await searchHashtag(hashtags[i]);
+		if(hasHashtag?.length === 0) {
+			const hashtag = await createHashtagId(hashtags[i]);
+			hashtagId = hashtag[0].id;
+			
+		} else{
+			hashtagId = hasHashtag[0].id;
+			
+		}
+		const valuesHashtag = [postId, hashtagId];
+	
+		await createPost_Hashtag(valuesHashtag);
+	}
+}
+
+export async function createPost(req, res) {
+	const user = req.userId;
+	const { url, description } = req.body;
+	const values = [user, url, description];
+	const hashtags = hashtagSeparator(description);
 	try {
 		const post = await createPostQuery(values);
 		const postId = post.id;
@@ -94,7 +111,7 @@ export async function getDatasUrl(req, res) {
 
 export async function deletePostId(req, res) {
 	const postId = req.params.id;
-	console.log(postId)
+	console.log(postId);
 	const user = req.userId;
 	console.log(user);
 	const post = getPostId([postId]);
@@ -114,12 +131,16 @@ export async function deletePostId(req, res) {
 export async function updatePost (req, res){
 	const userId = req.userId;
 	const {description,url, id}= req.body;
+	const hashtags = hashtagSeparator(description);
 	try{
-		const post = await updatePostQuery(description,url,id,userId);
+		await hashtagRepo.deleteByPostId(parseInt(id));
+		const post = await updatePostQuery(description,url,parseInt(id),parseInt(userId));
 		if(post.RowCount ===0){
 			res.sendStatus(404);
 			return;
 		}
+		await insertHashtags(hashtags,parseInt(id));
+		await hashtagRepo.deleteHashtags();
 		res.status(200).send(post.rows[0]);
 	}catch(error){
 		res.status(500).send(error);

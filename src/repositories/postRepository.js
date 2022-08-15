@@ -10,7 +10,7 @@ export async function createPostQuery(values) {
 		 );`, values
 	);
 
-	const {rows} = await client.query(`SELECT * FROM posts WHERE "userId"=$1 AND url=$2 AND description=$3;`, values 
+	const {rows} = await client.query('SELECT * FROM posts WHERE "userId"=$1 AND url=$2 AND description=$3;', values 
 	);
 	const lastPost = rows.length -1;
 	return rows[lastPost];
@@ -24,7 +24,6 @@ export async function getPostQuery() {
 		 ORDER BY posts.id DESC limit 20`);
 
 	return posts;
-
 }
 
 
@@ -40,17 +39,16 @@ export async function deletePost(value) {
 		`, value
 	);
 	await client.query(
-		`DELETE FROM posts WHERE id = $1`, value
-		);
-	}
-	
-	export async function getPostId(value){
-		const {rows:post}= await client.query(
-		'SELECT * FROM posts WHERE id = $1',value
-		);
-		return post;
+		'DELETE FROM posts WHERE id = $1', value
+	);
 }
-
+	
+export async function getPostId(value){
+	const {rows:post}= await client.query(
+		'SELECT * FROM posts WHERE id = $1',value
+	);
+	return post;
+}
 export async function updatePostQuery(description, url,id, userId){
 	return client.query(`UPDATE posts
 	SET description =$1, url = $2
@@ -59,18 +57,18 @@ export async function updatePostQuery(description, url,id, userId){
 }
 
 export async function searchHashtag(hashtag){
-	const {rows} = await client.query(`SELECT * FROM hashtags WHERE hashtag ILIKE $1;`, [hashtag])
+	const {rows} = await client.query('SELECT * FROM hashtags WHERE hashtag ILIKE $1;', [hashtag]);
 
 	return rows;
 }
 
 export async function createHashtagId(hashtag){
-	await client.query(`INSERT INTO hashtags (hashtag) VALUES ($1);`,[hashtag]);
-	const {rows} = await client.query(`SELECT * FROM hashtags WHERE hashtag ILIKE $1;`, [hashtag])
+	await client.query('INSERT INTO hashtags (hashtag) VALUES ($1);',[hashtag]);
+	const {rows} = await client.query('SELECT * FROM hashtags WHERE hashtag ILIKE $1;', [hashtag]);
 	return rows;
 }
 
 export async function createPost_Hashtag(values){
-	await client.query(`INSERT INTO post_hashtag ("postId", "hashtagId") VALUES ($1, $2);`, values);
+	await client.query('INSERT INTO post_hashtag ("postId", "hashtagId") VALUES ($1, $2);', values);
 }
 
