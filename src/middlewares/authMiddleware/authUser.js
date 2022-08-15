@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
 export async function authUser (req,res,next){
 
 	const { authorization } = req.headers;

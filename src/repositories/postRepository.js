@@ -24,7 +24,6 @@ export async function getPostQuery() {
 		 ORDER BY posts.id DESC limit 20`);
 
 	return posts;
-
 }
 
 
@@ -40,19 +39,16 @@ export async function deletePost(value) {
 		`, value
 	);
 	await client.query(
-		`DELETE FROM posts
-		WHERE id = $1
-		`, value
+		'DELETE FROM posts WHERE id = $1', value
 	);
 }
 	
 export async function getPostId(value){
-	const {rows:post}=await client.query(
-		'SELECT * posts WHERE id = $1',value
+	const {rows:post}= await client.query(
+		'SELECT * FROM posts WHERE id = $1',value
 	);
 	return post;
 }
-
 export async function updatePostQuery(description, url,id, userId){
 	return client.query(`UPDATE posts
 	SET description =$1, url = $2

@@ -6,11 +6,11 @@ import bcrypt from 'bcrypt';
 export default async function postNewUser(req,res){
   
 
-	const {username, email, password, profileImg} = req.body;
+	const {username, email, password, profileImgUrl} = req.body;
 
 	const encrypted_password = bcrypt.hashSync(password, 10);
 
-	const values = [username, email, encrypted_password, profileImg];
+	const values = [username, email, encrypted_password, profileImgUrl];
 
 	const {rowCount} = await userRepo.selectFromUsersQuery([email]);
 
