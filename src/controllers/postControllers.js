@@ -114,7 +114,7 @@ export async function deletePostId(req, res) {
 	const user = req.userId;
 	try {
 		const post = await getPostId([postId]);
-		if (post.userId === user) {
+		if (post.userId == user) {
 			await deletePost([postId]);
 			return res.sendStatus(204);
 		}else{
@@ -122,7 +122,7 @@ export async function deletePostId(req, res) {
 		}
 	} catch (error) {
 		console.log(error);
-		return res.sendStatus(500);
+		return res.sendStatus(500); 
 	}
 }
 
