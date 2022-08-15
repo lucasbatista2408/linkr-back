@@ -1,37 +1,37 @@
-import { hashtagRepo } from "../repositories/hashtagRepo.js";
+import { hashtagRepo } from '../repositories/hashtagRepo.js';
 
 export async function getHashtag(req, res){
     
-    const {hashtag} = req.params;
-    console.log(hashtag);
+	const {hashtag} = req.params;
+	console.log(hashtag);
     
-    try {
+	try {
         
-        const hashtagId = await hashtagRepo.searchHashtag(hashtag);
-        console.log(hashtagId)
+		const hashtagId = await hashtagRepo.searchHashtag(hashtag);
+		console.log(hashtagId);
     
-        const posts = await hashtagRepo.getPostsByHashtag(hashtagId);
-        console.log(posts)
-        res.status(200).send(posts);
+		const posts = await hashtagRepo.getPostsByHashtag(hashtagId);
+		console.log(posts);
+		res.status(200).send(posts);
 
-    } catch (error) {
-        console.log(error);
+	} catch (error) {
+		console.log(error);
 		res.sendStatus(500);
-    }
+	}
 
-};
+}
 
 
 export async function getTrendingHashtags(req, res){
 
-    try {
-        const trending = await hashtagRepo.getTrending();
+	try {
+		const trending = await hashtagRepo.getTrending();
     
-        res.status(200).send(trending);
+		res.status(200).send(trending);
         
-    } catch (error) {
-        console.log(error);
+	} catch (error) {
+		console.log(error);
 		res.sendStatus(500);
-    }
+	}
 
 }
