@@ -5,7 +5,7 @@ async function searchUserQuerie(username){
 	
 	return client.query(`SELECT id, username, "profileImgUrl" 
                          FROM users 
-                         WHERE username LIKE $1
+                         WHERE username ILIKE $1
                          ORDER BY username ASC;`, [username]);
 }
 
