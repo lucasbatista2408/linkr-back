@@ -18,7 +18,7 @@ export async function getLikes(req,res){
         
 		if(hasUserLiked.length != 0){
 
-            const usersThatLiked = users.filter(e => e.id !== parseInt(userId));
+			const usersThatLiked = users.filter(e => e.id !== parseInt(userId));
 			const usernamesThatLiked = usersThatLiked.map(e => e.username);
             
 			const likes = {quantity: rowCount, users: usernamesThatLiked, hasUserLiked: true };
