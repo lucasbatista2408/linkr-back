@@ -82,8 +82,10 @@ export async function createPost(req, res) {
 
 }
 export async function getPost(req, res) {
+	const offset = req.query.offset;
+
 	try {
-		const posts = await getPostQuery();
+		const posts = await getPostQuery([offset]);
 		res.status(200).send(posts);
 	} catch (error) {
 		console.log(error);

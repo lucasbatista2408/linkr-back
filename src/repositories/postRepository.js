@@ -15,13 +15,13 @@ export async function createPostQuery(values) {
 	const lastPost = rows.length -1;
 	return rows[lastPost];
 }
-export async function getPostQuery() {
+export async function getPostQuery(offset) {
 	const { rows: posts } = await client.query(
 		`SELECT posts.*, users.username, users."profileImgUrl"
 		 FROM posts
 		 JOIN users 
 		 ON users.id = posts."userId"
-		 ORDER BY posts.id DESC limit 20`);
+		 limit 10 offset $1`, offset);
 
 	return posts;
 }
