@@ -1,0 +1,5 @@
+CREATE TABLE repost (
+  id BIGSERIAL PRIMARY KEY,
+  "postId" INTEGER NOT NULL REFERENCES posts(id),
+  "userId" INTEGER NOT NULL REFERENCES users(id)
+);
