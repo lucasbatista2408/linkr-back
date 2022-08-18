@@ -15,6 +15,8 @@ async function followMiddleware(req, res, next){
         const {rowCount} = await pageRepository.getUserById(followedId);
 
         if( rowCount === 0) return res.sendStatus(404);
+        console.log(followedId, followerId);
+        
 
         req.follow = {followerId, followedId};
     
