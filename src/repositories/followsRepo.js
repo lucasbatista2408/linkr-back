@@ -16,7 +16,7 @@ async function deleteFollower(values){
 }
 
 async function getFollowedsId(userId){
-	return client.query(`SELECT * FROM followers WHERE "followerId" = $1;`, [userId]);
+	return client.query('SELECT * FROM followers WHERE "followerId" = $1;', [userId]);
 }
 
 const followsRepo = {
