@@ -84,7 +84,8 @@ export async function createPost(req, res) {
 export async function getPost(req, res) {
 	try {
 		const posts = await getPostQuery();
-		res.status(200).send(posts);
+		const postsReposts = separatePost(posts);
+		res.status(200).send(postsReposts);
 	} catch (error) {
 		console.log(error);
 		res.sendStatus(500);
@@ -111,12 +112,10 @@ export async function getDatasUrl(req, res) {
 
 export async function deletePostId(req, res) {
 	const postId = req.params.id;
-	console.log(postId);
 	const user = req.userId;
-	console.log(user);
-	const post = getPostId([postId]);
 	try {
-		if (post.userId === user) {
+		const post = await getPostId([postId]);
+		if (post.userId == user) {
 			await deletePost([postId]);
 			return res.sendStatus(204);
 		}else{
@@ -124,7 +123,7 @@ export async function deletePostId(req, res) {
 		}
 	} catch (error) {
 		console.log(error);
-		return res.sendStatus(500);
+		return res.sendStatus(500); 
 	}
 }
 
@@ -140,9 +139,68 @@ export async function updatePost (req, res){
 			return;
 		}
 		await insertHashtags(hashtags,parseInt(id));
+		console.log('aqui');
 		await hashtagRepo.deleteHashtags();
+		console.log('aqui2');
 		res.status(200).send(post.rows[0]);
 	}catch(error){
 		res.status(500).send(error);
 	}
+}
+
+function separatePost(posts){
+	const uniqueIds = new Set();
+	const onlyReposts = posts.filter((item)=> item.repostCount> 0 );
+	const unique = onlyReposts.filter(element => {
+		const isDuplicate = uniqueIds.has(element.id);
+		uniqueIds.add(element.id);
+		if (!isDuplicate) {
+			return true;
+		}
+		return false;
+	});
+	const newPosts = unique.map((item)=> {
+		const newObject={
+			id: item.id,
+			userId: item.userId,
+			url: item.url,
+			description: item.description,
+			createdAt: item.createdAt,
+			username: item.username,
+			profileImgUrl: item.profileImgUrl,
+			repostUsername: null,
+			repostCount: 0,
+			repostDate: null
+		};
+		return (newObject);
+	});
+	for(const v of posts){
+		newPosts.push(v);
+	}
+	const datePosts = newPosts.map((item)=>{
+		let realDate;
+		if(item.repostDate){
+			realDate = item.repostDate;
+		}else{
+			realDate = item.createdAt;
+		}
+		const newObject={
+			id: item.id,
+			userId: item.userId,
+			url: item.url,
+			description: item.description,
+			createdAt: item.createdAt,
+			username: item.username,
+			profileImgUrl: item.profileImgUrl,
+			repostUsername: item.repostUsername,
+			repostCount: item.repostCount,
+			repostDate: item.repostDate,
+			realDate: Math.floor(realDate.getTime()/1000)
+		};
+		return(newObject);
+	});
+
+	const sortedPosts = datePosts.sort((a,b)=> Number(b.realDate) - Number(a.realDate));
+	console.log(sortedPosts);
+	return sortedPosts;
 }

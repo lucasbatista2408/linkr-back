@@ -1,4 +1,5 @@
 import { pageRepository } from '../repositories/userRepository.js';
+import  followsRepo from '../repositories/followsRepo.js';
 
 
 export async function searchUserControler(req, res){
@@ -32,13 +33,26 @@ export async function searchUserControler(req, res){
 		const searchUsername = username?.concat(percent);
 		try{
 			const searchedUser = await pageRepository.searchUserQuerie(searchUsername);
+			
 			if(searchedUser.rowCount === 0){
 				res.status(200).send('');
 				return;
 			}
-			const users = searchedUser.rows.filter((item)=> item.id !== id );
+
+			const usersAndFollowStatus = [];
+			let item;
+			let newItem;
+
+			for(let i = 0; i < searchedUser.rowCount; i++){
+				item = searchedUser.rows[i];
+				newItem = await addFollowStatus(id, item.id, item);
+				usersAndFollowStatus.push(newItem);
+			}
+
+			const users = usersAndFollowStatus.filter((item)=> item.id !== id );
 			res.status(200).send(users);
 			return;
+
 		}catch(error){
 			res.status(500).send(error);
 			return;
@@ -66,3 +80,15 @@ export async function searchUserById (req, res){
 	}
 }
 
+export async function addFollowStatus(followerId, followedId, item){
+	try {
+		const values = [followerId, followedId];
+		const {rowCount} = await followsRepo.searchFollower(values);
+        
+		if(rowCount > 0) return {...item, isFollower:true };
+		else return {...item, isFollower:false };
+
+	} catch (error) {
+		console.log(error);
+	}
+}
