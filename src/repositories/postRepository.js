@@ -17,12 +17,16 @@ export async function createPostQuery(values) {
 }
 export async function getPostQuery(offset) {
 	const { rows: posts } = await client.query(
-		`SELECT posts.*, users.username, users."profileImgUrl"
-		 FROM posts
-		 JOIN users 
-		 ON users.id = posts."userId"
-		 ORDER BY posts.id DESC 
-		 limit 10 offset $1`, offset);
+		`SELECT posts.*, users.username, users."profileImgUrl", reposts."createdAt" AS "repostDate",
+		(SELECT username FROM users WHERE users.id= reposts."userId") AS "repostUsername",
+		(SELECT COUNT("postId") FROM reposts WHERE reposts."postId" = posts.id) as "repostCount"
+		FROM posts
+		JOIN users 
+		ON users.id = posts."userId"
+		LEFT JOIN reposts 
+		ON posts.id = reposts."postId"
+		ORDER BY posts.id DESC 
+		limit 10 offset $1`, offset);
 
 	return posts;
 }
