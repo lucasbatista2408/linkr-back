@@ -9,14 +9,15 @@ async function searchUserQuerie(username){
                          ORDER BY username ASC;`, [username]);
 }
 
-async function getPostById(id) {
+async function getPostById(id, offset) {
 	return client.query(
 		`SELECT posts.*, users.username, users."profileImgUrl"
 		 FROM posts
 		 JOIN users 
 		 ON users.id = posts."userId"
          WHERE users.id = $1
-		 ORDER BY posts.id DESC limit 20`,[id]);
+		 ORDER BY posts.id DESC 
+		 limit 10 offset $2`,[id, offset]);
 
 }
 
