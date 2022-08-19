@@ -46,7 +46,7 @@ export async function searchUserControler(req, res){
 			for(let i = 0; i < searchedUser.rowCount; i++){
 				item = searchedUser.rows[i];
 				newItem = await addFollowStatus(id, item.id, item);
-				usersAndFollowStatus.push(newItem)
+				usersAndFollowStatus.push(newItem);
 			}
 
 			const users = usersAndFollowStatus.filter((item)=> item.id !== id );
@@ -82,13 +82,13 @@ export async function searchUserById (req, res){
 
 export async function addFollowStatus(followerId, followedId, item){
 	try {
-        const values = [followerId, followedId];
-        const {rowCount} = await followsRepo.searchFollower(values);
+		const values = [followerId, followedId];
+		const {rowCount} = await followsRepo.searchFollower(values);
         
-        if(rowCount > 0) return {...item, isFollower:true }
-    	else return {...item, isFollower:false }
+		if(rowCount > 0) return {...item, isFollower:true };
+		else return {...item, isFollower:false };
 
-    } catch (error) {
-        console.log(error);
-    }
+	} catch (error) {
+		console.log(error);
+	}
 }
