@@ -32,19 +32,30 @@ export async function getPostQuery() {
 
 
 export async function deletePost(value) {
-	await client.query(
-		`DELETE FROM likes 
-		WHERE "postId" = $1
-		`, value
-	);
-	await client.query(
-		`DELETE FROM post_hashtag
-		WHERE "postId" = $1
-		`, value
-	);
-	await client.query(
-		'DELETE FROM posts WHERE id = $1', value
-	);
+
+		await client.query(
+			`DELETE FROM likes 
+			WHERE "postId" = $1
+			`, value
+		);
+		await client.query(
+			`DELETE FROM post_hashtag
+			WHERE "postId" = $1
+			`, value
+		);
+		await client.query(
+			`DELETE FROM reposts 
+			WHERE "postId"=$1`
+			, value
+		);
+		await client.query(
+			`DELETE FROM comments 
+			WHERE "postId" = $1`
+			, value
+		);
+		await client.query(
+			'DELETE FROM posts WHERE id = $1', value
+		);
 }
 	
 export async function getPostId(value){
