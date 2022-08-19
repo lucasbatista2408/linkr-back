@@ -169,7 +169,7 @@ function separatePost(posts){
 			username: item.username,
 			profileImgUrl: item.profileImgUrl,
 			repostUsername: null,
-			repostCount: 0,
+			repostCount: item.repostCount,
 			repostDate: null
 		};
 		return (newObject);
