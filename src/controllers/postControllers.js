@@ -10,6 +10,7 @@ import {
 } from '../repositories/postRepository.js';
 import { hashtagRepo } from '../repositories/hashtagRepo.js';
 import urlMetadata from 'url-metadata';
+import followsRepo from '../repositories/followsRepo.js';
 
 function hashtagSeparator(description){
 	const lowerNames =[];
@@ -82,10 +83,21 @@ export async function createPost(req, res) {
 
 }
 export async function getPost(req, res) {
+
+	const offset = req.query.offset;
+	const userId = req.userId;
+	console.log(userId)
 	try {
-		const posts = await getPostQuery();
-		const postsReposts = separatePost(posts);
-		res.status(200).send(postsReposts);
+		const posts = await getPostQuery([offset]);
+		console.log(posts);
+		const followedsId = await followsRepo.getFollowedsId(userId);
+		if(followedsId.rows.length === 0 ) return res.status(200).send([{posts: {}, followsAnybody: false}])
+		let arrayFollowedId = followedsId.rows.map((item, index) => item.followedId);
+		const arrayFollowedIdPlusUserId = [...arrayFollowedId, parseInt(userId)];
+		console.log(arrayFollowedIdPlusUserId);
+		const postsByFollowedUsers = posts.filter(e => arrayFollowedIdPlusUserId.includes(e.userId));
+		const postsReposts = separatePost(postsByFollowedUsers);
+		res.status(200).send([{posts: postsReposts, followsAnybody: true}]);
 	} catch (error) {
 		console.log(error);
 		res.sendStatus(500);

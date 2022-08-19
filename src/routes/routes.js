@@ -8,8 +8,7 @@ import commentRouter from './commentsRoutes.js';
 import followsRouter from './followsRouter.js';
 import repostRouter from './repostRoute.js';
 
-
-const router =Router ();
+const router = Router ();
 
 router.use(authRouter);
 router.use(userRouter);
