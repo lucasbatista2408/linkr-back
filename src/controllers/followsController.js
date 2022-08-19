@@ -72,3 +72,4 @@ export async function deleteFollower(req,res){
 		res.sendStatus(500);
     }
 };
+
