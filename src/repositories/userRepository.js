@@ -22,7 +22,7 @@ async function getPostById(id) {
 
 
 async function getUserById(id){
-	return client.query(`SELECT username 
+	return client.query(`SELECT username, "profileImgUrl" 
                          FROM users 
                          WHERE id = $1;`, [id]);
 }
