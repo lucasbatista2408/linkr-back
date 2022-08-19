@@ -84,10 +84,11 @@ export async function createPost(req, res) {
 }
 export async function getPost(req, res) {
 
+	const offset = req.query.offset;
 	const userId = req.userId;
 	console.log(userId)
 	try {
-		const posts = await getPostQuery();
+		const posts = await getPostQuery([offset]);
 		console.log(posts);
 		const followedsId = await followsRepo.getFollowedsId(userId);
 		if(followedsId.rows.length === 0 ) return res.status(200).send([{posts: {}, followsAnybody: false}])
