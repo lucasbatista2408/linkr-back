@@ -3,5 +3,6 @@ CREATE TABLE users (
 	"username" TEXT NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
-	"profileImgUrl" TEXT
+	"profileImgUrl" TEXT,
+	"createdAt" DATE NOT NULL DEFAULT NOW()
 );

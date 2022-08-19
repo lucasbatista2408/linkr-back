@@ -5,7 +5,8 @@ async function getCommentsQuerie(postId){
 						 FROM comments 
 						 JOIN users u
 						 ON u.id = "userId"
-						 WHERE "postId" = $1`, [postId]);
+						 WHERE "postId" = $1
+						 ORDER BY comments.id ASC`, [postId]);
 }
 
 async function insertCommentQuerie( userId, postId, commentary ){
