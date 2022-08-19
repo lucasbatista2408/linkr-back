@@ -10,6 +10,7 @@ import {
 } from '../repositories/postRepository.js';
 import { hashtagRepo } from '../repositories/hashtagRepo.js';
 import urlMetadata from 'url-metadata';
+import followsRepo from '../repositories/followsRepo.js';
 
 function hashtagSeparator(description){
 	const lowerNames =[];
@@ -82,10 +83,18 @@ export async function createPost(req, res) {
 
 }
 export async function getPost(req, res) {
+
+	const userId = req.userId;
+	console.log(userId)
 	try {
 		const posts = await getPostQuery();
-		const postsReposts = separatePost(posts);
-		res.status(200).send(postsReposts);
+		//console.log(posts);
+		const followedsId = await followsRepo.getFollowedsId(userId);
+		if(followedsId.rows.length === 0 ) return res.status(200).send([{posts: {}, followsAnybody: false}])
+		const arrayFollowedId = followedsId.rows.map((item, index) => item.followedId);
+		const postsByFollowedUsers = posts.filter(e => arrayFollowedId.includes(e.userId));
+		const postsReposts = separatePost(postsByFollowedUsers);
+		res.status(200).send([{posts: postsReposts, followsAnybody: true}]);
 	} catch (error) {
 		console.log(error);
 		res.sendStatus(500);

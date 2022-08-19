@@ -15,10 +15,15 @@ async function deleteFollower(values){
 	return client.query('DELETE FROM followers WHERE "followerId" = $1 AND "followedId" = $2;', values);
 }
 
+async function getFollowedsId(userId){
+	return client.query(`SELECT * FROM followers WHERE "followerId" = $1;`, [userId]);
+}
+
 const followsRepo = {
 	searchFollower,
 	addFollower,
-	deleteFollower
+	deleteFollower,
+	getFollowedsId
 };
 
 export default followsRepo;
