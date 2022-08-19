@@ -10,6 +10,7 @@ import {
 } from '../repositories/postRepository.js';
 import { hashtagRepo } from '../repositories/hashtagRepo.js';
 import urlMetadata from 'url-metadata';
+import followsRepo from '../repositories/followsRepo.js';
 
 function hashtagSeparator(description){
 	const lowerNames =[];
@@ -82,9 +83,20 @@ export async function createPost(req, res) {
 
 }
 export async function getPost(req, res) {
+
+	const userId = req.userId;
+	console.log(userId);
 	try {
 		const posts = await getPostQuery();
-		res.status(200).send(posts);
+		console.log(posts);
+		const followedsId = await followsRepo.getFollowedsId(userId);
+		if(followedsId.rows.length === 0 ) return res.status(200).send([{posts: {}, followsAnybody: false}]);
+		let arrayFollowedId = followedsId.rows.map((item, index) => item.followedId);
+		const arrayFollowedIdPlusUserId = [...arrayFollowedId, parseInt(userId)];
+		console.log(arrayFollowedIdPlusUserId);
+		const postsByFollowedUsers = posts.filter(e => arrayFollowedIdPlusUserId.includes(e.userId));
+		const postsReposts = separatePost(postsByFollowedUsers);
+		res.status(200).send([{posts: postsReposts, followsAnybody: true}]);
 	} catch (error) {
 		console.log(error);
 		res.sendStatus(500);
@@ -138,9 +150,68 @@ export async function updatePost (req, res){
 			return;
 		}
 		await insertHashtags(hashtags,parseInt(id));
+		console.log('aqui');
 		await hashtagRepo.deleteHashtags();
+		console.log('aqui2');
 		res.status(200).send(post.rows[0]);
 	}catch(error){
 		res.status(500).send(error);
 	}
+}
+
+function separatePost(posts){
+	const uniqueIds = new Set();
+	const onlyReposts = posts.filter((item)=> item.repostCount> 0 );
+	const unique = onlyReposts.filter(element => {
+		const isDuplicate = uniqueIds.has(element.id);
+		uniqueIds.add(element.id);
+		if (!isDuplicate) {
+			return true;
+		}
+		return false;
+	});
+	const newPosts = unique.map((item)=> {
+		const newObject={
+			id: item.id,
+			userId: item.userId,
+			url: item.url,
+			description: item.description,
+			createdAt: item.createdAt,
+			username: item.username,
+			profileImgUrl: item.profileImgUrl,
+			repostUsername: null,
+			repostCount: item.repostCount,
+			repostDate: null
+		};
+		return (newObject);
+	});
+	for(const v of posts){
+		newPosts.push(v);
+	}
+	const datePosts = newPosts.map((item)=>{
+		let realDate;
+		if(item.repostDate){
+			realDate = item.repostDate;
+		}else{
+			realDate = item.createdAt;
+		}
+		const newObject={
+			id: item.id,
+			userId: item.userId,
+			url: item.url,
+			description: item.description,
+			createdAt: item.createdAt,
+			username: item.username,
+			profileImgUrl: item.profileImgUrl,
+			repostUsername: item.repostUsername,
+			repostCount: item.repostCount,
+			repostDate: item.repostDate,
+			realDate: Math.floor(realDate.getTime()/1000)
+		};
+		return(newObject);
+	});
+
+	const sortedPosts = datePosts.sort((a,b)=> Number(b.realDate) - Number(a.realDate));
+	console.log(sortedPosts);
+	return sortedPosts;
 }

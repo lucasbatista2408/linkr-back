@@ -17,26 +17,41 @@ export async function createPostQuery(values) {
 }
 export async function getPostQuery() {
 	const { rows: posts } = await client.query(
-		`SELECT posts.*, users.username, users."profileImgUrl"
-		 FROM posts
-		 JOIN users 
-		 ON users.id = posts."userId"
-		 ORDER BY posts.id DESC limit 20`);
+		`SELECT posts.*, users.username, users."profileImgUrl", reposts."createdAt" AS "repostDate",
+		(SELECT username FROM users WHERE users.id= reposts."userId") AS "repostUsername",
+		(SELECT COUNT("postId") FROM reposts WHERE reposts."postId" = posts.id) as "repostCount"
+		FROM posts
+		JOIN users 
+		ON users.id = posts."userId"
+		LEFT JOIN reposts 
+		ON posts.id = reposts."postId"
+		ORDER BY posts.id DESC LIMIT 20`);
 
 	return posts;
 }
 
 
 export async function deletePost(value) {
+
 	await client.query(
 		`DELETE FROM likes 
-		WHERE "postId" = $1
-		`, value
+			WHERE "postId" = $1
+			`, value
 	);
 	await client.query(
 		`DELETE FROM post_hashtag
-		WHERE "postId" = $1
-		`, value
+			WHERE "postId" = $1
+			`, value
+	);
+	await client.query(
+		`DELETE FROM reposts 
+			WHERE "postId"=$1`
+		, value
+	);
+	await client.query(
+		`DELETE FROM comments 
+			WHERE "postId" = $1`
+		, value
 	);
 	await client.query(
 		'DELETE FROM posts WHERE id = $1', value
