@@ -8,9 +8,8 @@ export async function getComments(req, res){
 	}
 	try{
 		const comments = await commentsRepository.getCommentsQuerie(postId);
-		console.log (comments);
 		if(comments.rowCount === 0){
-			res.sendStatus(404);
+			res.status(200).send(comments.rows);
 			return;
 		}
 		res.status(200).send(comments.rows);
