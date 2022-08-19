@@ -82,8 +82,10 @@ export async function createPost(req, res) {
 
 }
 export async function getPost(req, res) {
+	const offset = req.query.offset;
+
 	try {
-		const posts = await getPostQuery();
+		const posts = await getPostQuery([offset]);
 		const postsReposts = separatePost(posts);
 		res.status(200).send(postsReposts);
 	} catch (error) {
@@ -139,9 +141,7 @@ export async function updatePost (req, res){
 			return;
 		}
 		await insertHashtags(hashtags,parseInt(id));
-		console.log('aqui');
 		await hashtagRepo.deleteHashtags();
-		console.log('aqui2');
 		res.status(200).send(post.rows[0]);
 	}catch(error){
 		res.status(500).send(error);

@@ -1,7 +1,7 @@
 import { hashtagRepo } from '../repositories/hashtagRepo.js';
 
 export async function getHashtag(req, res){
-    
+	const offset = req.query.offset;
 	const {hashtag} = req.params;
 	console.log(hashtag);
     
@@ -10,7 +10,7 @@ export async function getHashtag(req, res){
 		const hashtagId = await hashtagRepo.searchHashtag(hashtag);
 		console.log(hashtagId);
     
-		const posts = await hashtagRepo.getPostsByHashtag(hashtagId);
+		const posts = await hashtagRepo.getPostsByHashtag(hashtagId, offset);
 		console.log(posts);
 		res.status(200).send(posts);
 

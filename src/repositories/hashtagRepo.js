@@ -7,7 +7,7 @@ async function searchHashtag(hashtag){
 
 }
 
-async function getPostsByHashtag(hashtagId){
+async function getPostsByHashtag(hashtagId, offset){
 	const {rows} = await client.query(`SELECT p.*, u.username, u."profileImgUrl" 
     FROM post_hashtag ph
     JOIN posts p 
@@ -15,7 +15,8 @@ async function getPostsByHashtag(hashtagId){
     JOIN users u
     ON u.id = p."userId"
     WHERE "hashtagId" = $1
-    ORDER BY p.id DESC limit 20;`,[hashtagId]);
+    ORDER BY p.id DESC 
+	limit 10 offset $2;`,[hashtagId, offset]);
 
 	return rows;
 }
