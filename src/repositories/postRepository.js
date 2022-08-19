@@ -21,6 +21,7 @@ export async function getPostQuery(offset) {
 		 FROM posts
 		 JOIN users 
 		 ON users.id = posts."userId"
+		 ORDER BY posts.id DESC 
 		 limit 10 offset $1`, offset);
 
 	return posts;

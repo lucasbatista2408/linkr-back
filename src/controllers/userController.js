@@ -1,6 +1,7 @@
 import { pageRepository } from '../repositories/userRepository.js';
 
 
+
 export async function searchUserControler(req, res){
 	
 	// search user by id
@@ -49,13 +50,14 @@ export async function searchUserControler(req, res){
 
 export async function searchUserById (req, res){
 	const id = parseInt(req.params.id);
+	const offset = req.query.offset;
 	if(isNaN(id)){
 		res.status(422).send('Not a number');
 		return;
 	}
 	
 	try{
-		const postByUser = await pageRepository.getPostById(id);
+		const postByUser = await pageRepository.getPostById(id, offset);
 		if(postByUser.rowCount === 0){
 			res.status(200).send('');
 			return;
