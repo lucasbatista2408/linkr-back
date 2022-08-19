@@ -88,11 +88,13 @@ export async function getPost(req, res) {
 	console.log(userId)
 	try {
 		const posts = await getPostQuery();
-		//console.log(posts);
+		console.log(posts);
 		const followedsId = await followsRepo.getFollowedsId(userId);
 		if(followedsId.rows.length === 0 ) return res.status(200).send([{posts: {}, followsAnybody: false}])
-		const arrayFollowedId = followedsId.rows.map((item, index) => item.followedId);
-		const postsByFollowedUsers = posts.filter(e => arrayFollowedId.includes(e.userId));
+		let arrayFollowedId = followedsId.rows.map((item, index) => item.followedId);
+		const arrayFollowedIdPlusUserId = [...arrayFollowedId, parseInt(userId)];
+		console.log(arrayFollowedIdPlusUserId);
+		const postsByFollowedUsers = posts.filter(e => arrayFollowedIdPlusUserId.includes(e.userId));
 		const postsReposts = separatePost(postsByFollowedUsers);
 		res.status(200).send([{posts: postsReposts, followsAnybody: true}]);
 	} catch (error) {
