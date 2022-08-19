@@ -4,5 +4,5 @@ CREATE TABLE users (
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"profileImgUrl" TEXT,
-	"createdAt" DATE NOT NULL DEFAULT NOW()
+	"createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

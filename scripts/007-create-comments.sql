@@ -3,5 +3,5 @@ CREATE TABLE comments (
 	"userId" integer NOT NULL REFERENCES users(id),
 	"postId" integer NOT NULL REFERENCES posts(id),
     commentary TEXT NOT NULL,
-	"createdAt" DATE NOT NULL DEFAULT NOW()
+	"createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
